@@ -54,7 +54,7 @@ fi
 FULL="$(echo -n "$ZIPFILE" | sed 's/.zip$//')"
 BASE="$(echo -n "$FULL" | cut -d_ -f6-7)"
 cd "$DIR" || exit $?
-TMPDIR="$(mktemp -d -p .)"
+TMPDIR="$(mktemp -d ./tmpdir.XXXXXXXX)"
 cd "$TMPDIR" || exit $?
 B2PATH="$(unzip -qql "../$ZIPFILE" | grep "_B02.jp2" | head -1 | cut -b31-)"
 B3PATH="$(echo $B2PATH | sed 's/_B02.jp2/_B03.jp2/')"
