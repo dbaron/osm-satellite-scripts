@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# This script is less well maintained than process-sentinel.sh, which
+# has more comments and documentation.
+
 # from https://www.mapbox.com/tilemill/docs/guides/landsat-8-imagery/
 # and based on ../../daxing/2016-08-08/*.sh
 

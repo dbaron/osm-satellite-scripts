@@ -14,14 +14,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 # Script for processing Sentinel-2 imagery (MSI, Level 1-C) from
 # https://scihub.copernicus.eu/dhus/ into something that can be uploaded
 # to MapBox studio.
 
+# This depends on ImageMagick, gdal, and geotiff.  If you don't have the
+# dependencies, you might be able to get them by doing something like:
+#   on Ubuntu:
+#     # sudo apt install geotiff-bin gdal-bin imagemagick
+#   on Mac OS X:
+#     # brew install imagemagick
+#     # brew install libgeotiff
+# For more information, see:
+#   https://www.imagemagick.org/
+#   https://www.gdal.org/
+#   https://trac.osgeo.org/geotiff/
+
 # Note: The ImageMagick commands in this script require
 # larger-than-default resource limits.  In particular, in
 # /etc/ImageMagick-6/policy.xml , I changed "memory" to 3GiB and "disk"
-# to 5GiB.
+# to 5GiB.  (This was needed on Ubuntu but not on Mac OS X.)
 
 # This script creates a directory for temporary storage as a
 # subdirectory of the directory containing its .zip file argument.
