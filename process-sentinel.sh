@@ -67,6 +67,7 @@ done
 
 TMPDIR="$(mktemp -d "$(dirname "$1")"/tmpdir.XXXXXXXX)"
 
+# FIXME: Add better way of merging only parts of filenames.
 FULL=""
 B2FILES=""
 B3FILES=""
