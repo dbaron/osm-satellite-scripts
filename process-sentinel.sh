@@ -58,16 +58,15 @@ then
     exit 1
 fi
 
-if [ ! -f "$DIR/$ZIPFILE" ]
+if [ ! -f "$ZIPFILE" ]
 then
     echo "Expected argument .zip file to exist" 1>&2
     exit 1
 fi
 
 FULL="$(echo -n "$ZIPFILE" | sed 's/.zip$//')"
-BASE="$(echo -n "$FULL" | cut -d_ -f6-7)"
-cd "$DIR" || exit $?
-TMPDIR="$(mktemp -d ./tmpdir.XXXXXXXX)"
+
+TMPDIR="$(mktemp -d "$(dirname "$1")"/tmpdir.XXXXXXXX)"
 cd "$TMPDIR" || exit $?
 B2PATH="$(unzip -qql "../$ZIPFILE" | grep "_B02.jp2" | head -1 | cut -b31-)"
 B3PATH="$(echo $B2PATH | sed 's/_B02.jp2/_B03.jp2/')"
