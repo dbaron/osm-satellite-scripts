@@ -67,8 +67,7 @@ done
 
 TMPDIR="$(mktemp -d "$(dirname "$1")"/tmpdir.XXXXXXXX)"
 
-# FIXME: Add better way of merging only parts of filenames.
-FULL=""
+declare -a FILEPARTS
 B2FILES=""
 B3FILES=""
 B4FILES=""
@@ -76,7 +75,20 @@ B4FILES=""
 for ((i = 1; $i <= $#; i=$i + 1))
 do
     ZIPFILE="${!i}"
-    FULL="$FULL$(basename "$ZIPFILE" | sed 's/.zip$//')-"
+    INDEX=0
+    for WORD in $(basename "$ZIPFILE" | sed 's/.zip$//' | sed 's,_, ,g')
+    do
+        # For each piece of the filename, assume that it will either be
+        # the same every time, or different every time.
+        if [ $i -eq 1 ]
+        then
+            FILEPARTS[$INDEX]=$WORD
+        elif [ "$WORD" != "${FILEPARTS[$INDEX]}" ]
+        then
+            FILEPARTS[$INDEX]="${FILEPARTS[$INDEX]}-$WORD"
+        fi
+        INDEX=$(($INDEX + 1))
+    done
 
     B2PATH="$(unzip -qql "$ZIPFILE" | grep "_B02.jp2" | head -1 | cut -b31-)"
     B3PATH="$(echo $B2PATH | sed 's/_B02.jp2/_B03.jp2/')"
@@ -94,6 +106,12 @@ do
     gdal_translate "$TMPDIR/$B4JP2" "$TMPDIR/B04-$i.tif" || exit $?
     B4FILES="$B4FILES B04-$i.tif"
     "rm" "$TMPDIR/$B4JP2"
+done
+
+FULLNAME="${FILEPARTS[0]}"
+for ((INDEX = 1; $INDEX < ${#FILEPARTS[@]}; INDEX=$INDEX + 1))
+do
+    FULLNAME="${FULLNAME}_${FILEPARTS[$INDEX]}"
 done
 
 cd "$TMPDIR" || exit $?
@@ -124,7 +142,7 @@ convert B0{4,3,2}-8bit.tif -combine RGB.tif || exit $?
 "rm" B02-8bit.tif B03-8bit.tif B04-8bit.tif
 gdal_edit.py -a_srs EPSG:3857 RGB.tif || exit $?
 "rm" RGB.tfw
-mv RGB.tif "../${FULL}RGB-${CONTRAST}x${MIDPOINT}.tif"
+mv RGB.tif "../${FULLNAME}-RGB-${CONTRAST}x${MIDPOINT}.tif"
 
 cd .. || exit $?
 rmdir "$TMPDIR"
