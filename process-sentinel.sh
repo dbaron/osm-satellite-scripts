@@ -138,7 +138,7 @@ convert -depth 8 B03-corrected.tif B03-8bit.tif || exit $?
 convert -depth 8 B04-corrected.tif B04-8bit.tif || exit $?
 "rm" B02-corrected.tif B03-corrected.tif B04-corrected.tif
 
-convert B0{4,3,2}-8bit.tif -combine RGB.tif || exit $?
+convert B0{4,3,2}-8bit.tif -combine -compress LZW RGB.tif || exit $?
 "rm" B02-8bit.tif B03-8bit.tif B04-8bit.tif
 gdal_edit.py -a_srs EPSG:3857 RGB.tif || exit $?
 "rm" RGB.tfw
